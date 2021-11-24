@@ -1,9 +1,6 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  PASSSWORD_MIN_LENGTH = 6
-  NAME_MAX_LENGTH = 51
-  EMAIL_MAX_LENGTH = 255
   def setup
     @user = User.new(name: "Example User",
                      email: "user@example.com",
@@ -12,12 +9,12 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "name should not be too long" do
-    @user.name = "a" * NAME_MAX_LENGTH
+    @user.name = "a" * User::NAME_MAX_LENGTH
     assert_not @user.valid?
   end
 
   test "email should not be too long" do
-    @user.email = "a" * EMAIL_MAX_LENGTH + "@example.com"
+    @user.email = "a" * User::EMAIL_MAX_LENGTH + "@example.com"
     assert_not @user.valid?
   end
 
@@ -48,12 +45,12 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "password should be present (nonblank)" do
-    @user.password = @user.password_confirmation = " " * PASSSWORD_MIN_LENGTH
+    @user.password = @user.password_confirmation = " " * User::PASSSWORD_MIN_LENGTH
     assert_not @user.valid?
   end
 
   test "password should have a minimum length" do
-    @user.password = @user.password_confirmation = "a" * PASSSWORD_MIN_LENGTH.pred
+    @user.password = @user.password_confirmation = "a" * User::PASSSWORD_MIN_LENGTH.pred
     assert_not @user.valid?
   end
 end
