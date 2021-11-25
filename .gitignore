@@ -2,6 +2,7 @@
 bin/
 lib/
 log/
+db/
 node_modules/
 vendor/
 yarn-error.log
