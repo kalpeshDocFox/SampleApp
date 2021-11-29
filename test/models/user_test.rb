@@ -8,6 +8,10 @@ class UserTest < ActiveSupport::TestCase
                      password_confirmation: "foobar")
   end
 
+  test "authenticated? should return false for a user with nil digest" do
+    assert_not @user.authenticated?('')
+  end
+
   test "name should not be too long" do
     @user.name = "a" * User::NAME_MAX_LENGTH
     assert_not @user.valid?
