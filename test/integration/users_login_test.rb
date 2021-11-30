@@ -5,7 +5,8 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     @user = users(:michael)
   end
 
-  test "POST login with invalid login credentials" do
+  test "POST login with invalid login credentials and asset that the user is not logged in and
+              stays on login with a flash error message" do
     get login_path
     assert_template 'sessions/new'
     post login_path, params: { session: { email: @user.email, password: "invalid" } }
@@ -16,7 +17,8 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert flash.empty?
   end
 
-  test "POST login with valid credentials" do
+  test "POST login with valid credentials then log out assert that redirected
+              to user/show page with logged in nav, then login page with logged out nav once logged out" do
     post login_path, params: { session: { email: @user.email, password: 'password' } }
     assert_redirected_to @user
   end
