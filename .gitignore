@@ -4,6 +4,7 @@ bin/
 lib/
 log/
 db/
+/db/
 node_modules/
 vendor/
 yarn-error.log
