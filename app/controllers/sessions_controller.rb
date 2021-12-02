@@ -4,9 +4,13 @@ class SessionsController < ApplicationController
   def new
   end
 
+  def can_authenticate(user)
+    (user && user.authenticate(params[:session][:password]))
+  end
+
   def create
-    @user = User.find_by(email: params[:session][:email].downcase)
-    if can_authenticate?(@user)
+    @user = User.find_by(email: params.dig(:session, :email)&.downcase)
+    if can_authenticate(@user)
       reset_session
       log_in @user
       params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
