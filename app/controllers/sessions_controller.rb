@@ -11,11 +11,12 @@ class SessionsController < ApplicationController
   def create
     @user = User.find_by(email: params.dig(:session, :email)&.downcase)
     if can_authenticate(@user)
+      forwarding_url = session[:forwarding_url]
       reset_session
       log_in @user
       params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
       session[:session_token] = @user.session_token
-      redirect_to @user
+      redirect_to forwarding_url || @user
     else
       flash.now[:danger] = 'Invalid email/password combination'
       render 'new'
