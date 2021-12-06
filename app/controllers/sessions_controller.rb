@@ -4,13 +4,13 @@ class SessionsController < ApplicationController
   def new
   end
 
-  def can_authenticate(user)
+  def can_authenticate?(user)
     (user && user.authenticate(params[:session][:password]))
   end
 
   def create
     @user = User.find_by(email: params.dig(:session, :email)&.downcase)
-    if can_authenticate(@user)
+    if can_authenticate?(@user)
       forwarding_url = session[:forwarding_url]
       reset_session
       log_in @user
