@@ -4,15 +4,31 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
   def setup 
     ActionMailer::Base.deliveries.clear
   end
+  
+  def params_valid_user
+    { user: {
+      name: "Example User",
+      email: "user@example.com",
+      password: "password",
+      confirm_password: "password" 
+      } 
+    }
+  end
+
+  def params_signup_valid
+    { user: {
+        name: "",
+        email: "user@invalid",
+        password: "foo",
+        password_confirmation: "bar" 
+        } 
+      }
+  end
 
   test "can successfully sign up a user with valid params" do
     get signup_path
     assert_no_difference 'User.count' do
-      post users_path, params: { user: {
-        name: "",
-        email: "user@invalid",
-        password: "foo",
-        password_confirmation: "bar" } }
+      post users_path, params: params_signup_valid
     end
     assert_template 'users/new'
   end
@@ -20,26 +36,16 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
   test "test to confirm with valid signup information" do
     get signup_path
     assert_difference 'User.count', 1 do
-      post users_path, params: { user: {
-        name: "Example User",
-        email: "user@example.com",
-        password: "password",
-        confirm_password: "password" } }
+      post users_path, params: params_valid_user
     end
     follow_redirect!
-    #assert_template 'users/show'
-    #assert is_logged_in?
+    assert_template 'users/show'
+    assert is_logged_in?
   end
 
   test "valid signup information with account activation" do get signup_path
     assert_difference 'User.count', 1 do
-    post users_path, params: { user: 
-                                { name: "Example User",
-                                  email: "user@example.com",
-                                  password:              "password",
-                                  password_confirmation: "password" 
-                                } 
-                              }
+    post users_path, params: params_valid_user
     end
     assert_equal 1, ActionMailer::Base.deliveries.size 
     user = assigns(:user)

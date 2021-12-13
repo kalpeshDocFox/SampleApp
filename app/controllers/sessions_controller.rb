@@ -1,11 +1,23 @@
 class SessionsController < ApplicationController
   include SessionsHelper
 
-  def new
-  end
-
   def can_authenticate?(user)
     (user && user.authenticate(params[:session][:password]))
+  end
+
+  def handle_active_account
+   forwarding_url = session[:forwarding_url]
+   reset_session
+   log_in @user
+   params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
+   session[:session_token] = @user.session_token
+   redirect_to forwarding_url || @user
+  end
+
+  def handle_inactive_account
+    message = "Account not activated. Check your email for the activation link."
+    flash[:warning] = message
+    redirect_to root_url
   end
 
   def create
@@ -13,17 +25,9 @@ class SessionsController < ApplicationController
 
     if can_authenticate?(@user)
       if @user.activated?
-          forwarding_url = session[:forwarding_url]
-          reset_session
-          log_in @user
-          params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
-          session[:session_token] = @user.session_token
-          redirect_to forwarding_url || @user
+          handle_active_account
         else
-          message = "Account not activated. "
-          message += "Check your email for the activation link." 
-          flash[:warning] = message
-          redirect_to root_url
+          handle_inactive_account
         end
       else
         flash.now[:danger] = 'Invalid email/password combination'
