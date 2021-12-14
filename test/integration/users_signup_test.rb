@@ -60,5 +60,4 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert is_logged_in?
     end 
-  
   end
