@@ -34,7 +34,7 @@ class SessionsController < ApplicationController
   def current_user
     if (user_id = session[:user_id])
       user ||= User.find_by(id: user_id)
-        @current_user||= user if (user.session_token!=session['session_token'])
+      @current_user ||= user if (user.session_token != session['session_token'])
     elsif (user_id = cookies.encrypted[:user_id])
       user = User.find_by(id: user_id)
       if user && user.authenticated?(:remember, cookies[:remember_token])
