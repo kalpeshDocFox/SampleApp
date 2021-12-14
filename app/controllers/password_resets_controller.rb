@@ -3,10 +3,12 @@ class PasswordResetsController < ApplicationController
   before_action :valid_user, only: [:edit, :update] 
   before_action :check_expiration, only: [:edit, :update] # Case (1)
  
-  def new 
+  def email_param
+    params[:password_reset][:email].downcase
   end
+  
   def create
-    @user = User.find_by(email: params[:password_reset][:email].downcase) 
+    @user = @user = User.find_by(email: email_param) 
     if @user
       @user.create_reset_digest
       @user.send_password_reset_email
@@ -18,8 +20,6 @@ class PasswordResetsController < ApplicationController
     end
   end
 
-  def edit
-  end 
   def update
     if params[:user][:password].empty?
       @user.errors.add(:password, "can't be empty")
@@ -34,7 +34,6 @@ class PasswordResetsController < ApplicationController
       render 'edit'
     end
   end
-
 
   private
 
