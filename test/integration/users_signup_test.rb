@@ -31,7 +31,8 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     #assert is_logged_in?
   end
 
-  test "valid signup information with account activation" do get signup_path
+  test "valid signup information with account activation" do
+    get signup_path
     assert_difference 'User.count', 1 do
       params = {
         user: {
@@ -41,7 +42,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
           password_confirmation: "password"
         }
       }
-      post users_path, params
+      post users_path, params:params
     end
     assert_equal 1, ActionMailer::Base.deliveries.size 
     user = assigns(:user)
